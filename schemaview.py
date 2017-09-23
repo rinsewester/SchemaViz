@@ -24,6 +24,7 @@ class SchemaView(QGraphicsView):
         self.setViewportUpdateMode(QGraphicsView.SmartViewportUpdate)
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.setRenderHint(QPainter.Antialiasing, True)
+        self.zoomLevel = 250
 
     def wheelEvent(self, event):
         #Catch wheelEvent and zoom instead of scroll when Ctrl is pressed
@@ -48,14 +49,30 @@ class SchemaView(QGraphicsView):
         self.setInteractive(True)
         self.setDragMode(False)
         self.setDragMode(QGraphicsView.RubberBandDrag)
-
         super().keyReleaseEvent(event)
 
+    def resetView(self):
+        self.zoomLevel = 250
+        self.setupMatrix()
+        self.schemaview.ensureVisible(QRectF(0,0,0,0))
+
+    def setupMatrix(self):
+        scale = 2.0 ** ((self.zoomLevel - 250) / 50.0)
+        transform = QTransform()
+        transform.scale(scale, scale)
+        self.schemaview.setTransform(transform)
+
     def zoomIn(self):
-        print('add somm in code')
+        self.zoomLevel += 10
+        if self.zoomLevel > 350:
+            self.zoomLevel = 350
+        self.setupMatrix()
 
     def zoomOut(self):
-        print('add somm in code')
+        self.zoomLevel -= 10
+        if self.zoomLevel < 0:
+            self.zoomLevel = 0
+        self.setupMatrix()
 
 
 class SchemaScene(QGraphicsScene):
@@ -91,10 +108,6 @@ class GraphWidget(QWidget):
         #Make a graphics scene
         self.scene = GraphicsScene()
         self.schemaview.setScene(self.scene)
-
-
-        # initial zoomlevel
-        self.zoomLevel = 250
 
         #Final layout
         topLayout = QHBoxLayout()
@@ -142,29 +155,3 @@ class GraphWidget(QWidget):
         self.scene.updateSceneRect()
         self.resetView()
         self.update()
-
-
-    def resetView(self):
-        self.zoomLevel = 250
-        self.setupMatrix()
-        self.schemaview.ensureVisible(QRectF(0,0,0,0))
-
-    def setupMatrix(self):
-        scale = 2.0 ** ((self.zoomLevel - 250) / 50.0)
-
-        transform = QTransform()
-        transform.scale(scale, scale)
-
-        self.schemaview.setTransform(transform)
-
-    def zoomIn(self):
-        self.zoomLevel += 10
-        if self.zoomLevel > 350:
-            self.zoomLevel = 350
-        self.setupMatrix()
-
-    def zoomOut(self):
-        self.zoomLevel -= 10
-        if self.zoomLevel < 0:
-            self.zoomLevel = 0
-        self.setupMatrix()    

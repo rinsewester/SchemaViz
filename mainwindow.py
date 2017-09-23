@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import QDockWidget, QApplication, QMainWindow, QAction, QFi
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 
-from schemaview import GraphWidget
+from schemaview import SchemaView, SchemaScene
 
 class MainWindow(QMainWindow):
 
@@ -56,15 +56,16 @@ class MainWindow(QMainWindow):
         if sys.platform == 'darwin':
             self.setUnifiedTitleAndToolBarOnMac(True)
 
-        self.graphWidget = GraphWidget()
-        self.graphWidget.setStaticGraph()
+        self.schemaview = SchemaView()
+        self.schemascene = SchemaScene()
+        self.schemaview.setScene(self.schemascene)
 
         # connect the view menu actions to the graphwidget
-        zoomInAction.triggered.connect(self.graphWidget.zoomIn)
-        zoomOutAction.triggered.connect(self.graphWidget.zoomOut)
-        resetZoomAction.triggered.connect(self.graphWidget.resetView)
+        zoomInAction.triggered.connect(self.schemaview.zoomIn)
+        zoomOutAction.triggered.connect(self.schemaview.zoomOut)
+        resetZoomAction.triggered.connect(self.schemaview.resetView)
 
-        self.setCentralWidget(self.graphWidget)
+        self.setCentralWidget(self.schemaview)
 
         self.setWindowTitle('Schema designer')
         self.setGeometry(0, 30, 1300, 750)
