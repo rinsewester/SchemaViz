@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import QDockWidget, QApplication, QMainWindow, QAction, QFi
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 
-from graphicsview import GraphWidget
+from schemaview import GraphWidget
 
 class MainWindow(QMainWindow):
 
