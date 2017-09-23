@@ -1,0 +1,46 @@
+{
+    "name": "Simple schema1",
+    "version" : "0.0.1",
+    "components": [
+        {
+            "name" : "P1",
+            "rightsockets" : ["out"]
+        },
+        {
+            "name" : "P2",
+            "rightsockets" : ["out"]
+        },
+        {
+            "name" : "Op",
+            "leftsockets" : ["in0", "in1"],
+            "rightsockets" : ["out0", "out1"]
+        },
+        {
+            "name" : "C1",
+            "leftsockets" : ["in"]
+        },
+        {
+            "name" : "C2",
+            "leftsockets" : ["in"]
+        }
+    ],
+
+    "links": [
+        {
+            "src": "P1.out",
+            "dst": "Op.in0"
+        },
+        {
+            "src": "P2.out",
+            "dst": "Op.in1"
+        },
+        {
+            "src": "Op.out0",
+            "dst": "C1.in"
+        },
+        {
+            "src": "Op.out1",
+            "dst": "C2.in"
+        }
+    ]
+}
