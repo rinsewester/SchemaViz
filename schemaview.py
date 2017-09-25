@@ -31,9 +31,9 @@ class SchemaView(QGraphicsView):
         if event.modifiers() & Qt.ControlModifier:
             if not event.angleDelta().isNull():
                 if event.angleDelta().y() > 0:
-                    self.widget.zoomIn()
+                    self.zoomIn()
                 else:
-                    self.widget.zoomOut()
+                    self.zoomOut()
             event.accept()
         else:
             super().wheelEvent(event)
@@ -54,13 +54,13 @@ class SchemaView(QGraphicsView):
     def resetView(self):
         self.zoomLevel = 250
         self.setupMatrix()
-        self.schemaview.ensureVisible(QRectF(0,0,0,0))
+        self.ensureVisible(QRectF(0,0,0,0))
 
     def setupMatrix(self):
         scale = 2.0 ** ((self.zoomLevel - 250) / 50.0)
         transform = QTransform()
         transform.scale(scale, scale)
-        self.schemaview.setTransform(transform)
+        self.setTransform(transform)
 
     def zoomIn(self):
         self.zoomLevel += 10
@@ -94,64 +94,3 @@ class SchemaScene(QGraphicsScene):
             self.setSceneRect(rect)
         else:
             self.lockScene = False
-
-class GraphWidget(QWidget):
-
-    def __init__(self):
-        super().__init__()
-
-        self.initUI()
-        
-    def initUI(self):
-        self.schemaview = SchemaView(self)
-
-        #Make a graphics scene
-        self.scene = GraphicsScene()
-        self.schemaview.setScene(self.scene)
-
-        #Final layout
-        topLayout = QHBoxLayout()
-        topLayout.setContentsMargins(0, 0, 0, 0)
-        topLayout.setSpacing(0)
-        topLayout.addWidget(self.schemaview)
-        self.setLayout(topLayout)
-
-
-    def setStaticGraph(self):
-
-        minX, minY, maxX, maxY = -50, -50, 150, 100
-        self.centerOfGraph = QPointF((minX + maxX) / 2, (minY + maxY) / 2)
-
-        self.graph.clearGraph()
-        self.scene.clear()
-
-
-        #Place graph objects based on the graph data
-        nodeList = []
-        nodePoints = []
-        
-        n1_name, n1_x, n1_y = 'N1', 100, 100
-        n2_name, n2_x, n2_y = 'N2', 250, 100
-        n3_name, n3_x, n3_y = 'N3', 250, 200
-
-        self.graph.addNode(n1_name, n1_x, n1_y)
-        nodeList.append(n1_name)
-        nodePoints.append([n1_x, n1_y])
-        self.graph.addNode(n2_name, n2_x, n2_y)
-        nodeList.append(n2_name)
-        nodePoints.append([n2_x, n2_y])
-        self.graph.addNode(n3_name, n3_x, n3_y)
-        nodeList.append(n3_name)
-        nodePoints.append([n3_x, n3_y])
-
-        # PLace the edges
-        n1_idx = 0
-        n2_idx = 1
-        n3_idx = 2
-        self.graph.addEdgeToNodes(n1_idx, n2_idx, 'right', 'left', src = 'N1', dst = 'N2')
-        self.graph.addEdgeToNodes(n2_idx, n1_idx, 'left', 'right', src = 'N2', dst = 'N1')
-        self.graph.addEdgeToNodes(n1_idx, n3_idx, 'right', 'left', src = 'N1', dst = 'N3')
-
-        self.scene.updateSceneRect()
-        self.resetView()
-        self.update()
