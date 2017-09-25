@@ -44,13 +44,13 @@ class ComponentGI(QGraphicsItem):
             painter.setBrush(QBrush(schemastyle.NODE_BACKGROUND_COLOR.lighter(150)))
         else:
             painter.setBrush(QBrush(schemastyle.NODE_BACKGROUND_COLOR))
-            
-        painter.drawRoundedRect(-self.compWidth // 2, -self.compHeight // 2, self.compWidth, self.compHeight, 5, 5)
 
-        # if lod > 0.2:
-        #     self.paintNodeIO(painter, lod)
-        # if lod > 0.4:
-        #     self.paintNodeName(painter)
+        if lod > 0.5:
+            # Draw in high detail
+            painter.drawRoundedRect(-self.compWidth // 2, -self.compHeight // 2, self.compWidth, self.compHeight, 5, 5)
+        else:
+            # Draw in low detail
+            painter.drawRect(-self.compWidth // 2, -self.compHeight // 2, self.compWidth, self.compHeight)
 
 
     def hoverEnterEvent(self, event):
