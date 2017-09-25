@@ -35,11 +35,10 @@ class ComponentGI(QGraphicsItem):
     def paint(self, painter, option, widget):
         lod = option.levelOfDetailFromTransform(painter.worldTransform())
         
-        painter.setPen(Qt.NoPen)
-        # if self.isSelected():
-        #     painter.setBrush(QBrush(Qt.gray))
-        # else:
-        #     painter.setBrush(QBrush(Qt.white))
+        if self.isSelected():
+            painter.setPen(Qt.white)
+        else:
+            painter.setPen(Qt.NoPen)
         if self.hovering:
             painter.setBrush(QBrush(schemastyle.NODE_BACKGROUND_COLOR.lighter(150)))
         else:
