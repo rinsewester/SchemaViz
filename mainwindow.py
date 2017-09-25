@@ -15,6 +15,7 @@ from PyQt5.QtGui import QIcon
 
 from schemaview import SchemaView, SchemaScene
 from componentgi import ComponentGI
+import schemastyle
 
 class MainWindow(QMainWindow):
 
@@ -59,16 +60,16 @@ class MainWindow(QMainWindow):
 
         self.schemaview = SchemaView()
         self.schemascene = SchemaScene()
-        self.c1 = ComponentGI()
-        self.c2 = ComponentGI()
-        self.c1.setPos(0,0)
-        self.c2.setPos(100,0)
-        self.schemascene.addItem(self.c1)
-        self.schemascene.addItem(self.c2)
-        self.t1 = self.schemascene.addText('Alpha')
-        self.t1.setParentItem(self.c1)
-        self.t2 = self.schemascene.addText('Beta')
-        self.t2.setParentItem(self.c2)
+
+        for x in range(16):
+            for y in range(16):
+                comp = ComponentGI()
+                comp.setPos(x * 150, y * 150)
+                text = self.schemascene.addText('N(' + str(x) + ',' + str(y) +')')
+                text.setDefaultTextColor(schemastyle.NODE_TEXT_COLOR)
+                text.setParentItem(comp)
+                self.schemascene.addItem(comp)
+
         self.schemascene.updateSceneRect()
         self.schemaview.setScene(self.schemascene)
         self.schemaview.resetView()

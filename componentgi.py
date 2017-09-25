@@ -26,6 +26,8 @@ class ComponentGI(QGraphicsItem):
 
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
+        self.setAcceptHoverEvents(True)
+        self.hovering = False
 
     def boundingRect(self):
         return QRectF(-self.compWidth // 2, -self.compHeight // 2, self.compWidth, self.compHeight)
@@ -34,10 +36,15 @@ class ComponentGI(QGraphicsItem):
         lod = option.levelOfDetailFromTransform(painter.worldTransform())
         
         painter.setPen(Qt.NoPen)
-        if self.isSelected():
-            painter.setBrush(QBrush(Qt.gray))
+        # if self.isSelected():
+        #     painter.setBrush(QBrush(Qt.gray))
+        # else:
+        #     painter.setBrush(QBrush(Qt.white))
+        if self.hovering:
+            painter.setBrush(QBrush(schemastyle.NODE_BACKGROUND_COLOR.lighter(150)))
         else:
-            painter.setBrush(QBrush(Qt.white))
+            painter.setBrush(QBrush(schemastyle.NODE_BACKGROUND_COLOR))
+            
         painter.drawRoundedRect(-self.compWidth // 2, -self.compHeight // 2, self.compWidth, self.compHeight, 5, 5)
 
         # if lod > 0.2:
@@ -45,6 +52,16 @@ class ComponentGI(QGraphicsItem):
         # if lod > 0.4:
         #     self.paintNodeName(painter)
 
+
+    def hoverEnterEvent(self, event):
+        self.setCursor(Qt.PointingHandCursor)
+        self.hovering = True
+        super().hoverEnterEvent(event)
+
+    def hoverLeaveEvent(self, event):
+        self.setCursor(Qt.ArrowCursor)
+        self.hovering = False
+        super().hoverLeaveEvent(event)
 
     # def itemChange(self, change, value):
     #     newPos = value
