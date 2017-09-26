@@ -26,6 +26,7 @@ class ComponentGI(QGraphicsItem):
 
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
+        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
         self.setAcceptHoverEvents(True)
         self.hovering = False
 
@@ -62,18 +63,18 @@ class ComponentGI(QGraphicsItem):
         self.hovering = False
         super().hoverLeaveEvent(event)
 
-    # def itemChange(self, change, value):
-    #     newPos = value
-    #     if change == QGraphicsItem.ItemPositionChange:
-    #         newPos = self.snapToGrid(newPos)
+    def itemChange(self, change, value):
+        newPos = value
+        if change == QGraphicsItem.ItemPositionChange:
+            newPos = self.snapToGrid(newPos)
 
-    #     return super().itemChange(change, newPos)
+        return super().itemChange(change, newPos)
 
-    # def snapToGrid(self, position):
-    #     gridSizeX = 40
-    #     gridSizeY = 10
-    #     curPos = QPoint(position.x(), position.y())
-    #     return QPoint(round(curPos.x() / gridSizeX) * gridSizeX, round(curPos.y() / gridSizeY) * gridSizeY)
+    def snapToGrid(self, position):
+        gridSizeX = 25
+        gridSizeY = 10
+        curPos = QPoint(position.x(), position.y())
+        return QPoint(round(curPos.x() / gridSizeX) * gridSizeX, round(curPos.y() / gridSizeY) * gridSizeY)
     
     def contextMenuEvent(self, event):
         print('node menu triggered')

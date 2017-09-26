@@ -61,8 +61,8 @@ class MainWindow(QMainWindow):
         self.schemaview = SchemaView()
         self.schemascene = SchemaScene()
 
-        for x in range(16):
-            for y in range(16):
+        for x in range(32):
+            for y in range(32):
                 comp = ComponentGI()
                 comp.setPos(x * 150, y * 150)
                 text = self.schemascene.addText('N(' + str(x) + ',' + str(y) +')')
