@@ -47,10 +47,12 @@ class ComponentGI(QGraphicsItem):
 
         if lod > 0.5:
             # Draw in high detail
-            painter.drawRoundedRect(-self.compWidth // 2, -self.compHeight // 2, self.compWidth, self.compHeight, 5, 5)
+            painter.drawRoundedRect(-self.compWidth // 2, -self.compHeight // 2,
+                self.compWidth, self.compHeight, 5, 5)
         else:
             # Draw in low detail
-            painter.drawRect(-self.compWidth // 2, -self.compHeight // 2, self.compWidth, self.compHeight)
+            painter.drawRect(-self.compWidth // 2, -self.compHeight // 2,
+                self.compWidth, self.compHeight)
 
 
     def hoverEnterEvent(self, event):
@@ -67,14 +69,12 @@ class ComponentGI(QGraphicsItem):
         newPos = value
         if change == QGraphicsItem.ItemPositionChange:
             newPos = self.snapToGrid(newPos)
-
         return super().itemChange(change, newPos)
 
     def snapToGrid(self, position):
-        gridSizeX = 25
-        gridSizeY = 10
-        curPos = QPoint(position.x(), position.y())
-        return QPoint(round(curPos.x() / gridSizeX) * gridSizeX, round(curPos.y() / gridSizeY) * gridSizeY)
+        cur_x, cur_y = position.x(), position.y()
+        return QPoint(round(cur_x / schemastyle.GRID_X_RES) * schemastyle.GRID_X_RES,
+            round(cur_y / schemastyle.GRID_Y_RES) * schemastyle.GRID_Y_RES)
     
     def contextMenuEvent(self, event):
         print('node menu triggered')

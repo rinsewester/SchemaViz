@@ -4,6 +4,9 @@ from PyQt5.QtGui import QPainter, QColor
 
 BACKGROUND_COLOR = QColor(57, 57, 57)
 GRID_COLOR = QColor(154, 154, 154)
+GRID_X_RES = 25
+GRID_Y_RES = 10
+
 
 NODE_BACKGROUND_COLOR = QColor(77, 77, 77)
 NODE_SHADOW_COLOR = QColor(48, 48, 48)
