@@ -17,7 +17,7 @@ import schemastyle
 
 class ComponentGI(QGraphicsItem):
 
-    def __init__(self):
+    def __init__(self, name):
         super().__init__()
         
         self.compWidth = 100
@@ -30,6 +30,8 @@ class ComponentGI(QGraphicsItem):
         self.setAcceptHoverEvents(True)
         self.hovering = False
 
+        self.compName = name
+
     def boundingRect(self):
         return QRectF(-self.compWidth // 2, -self.compHeight // 2, self.compWidth, self.compHeight)
     
@@ -41,14 +43,18 @@ class ComponentGI(QGraphicsItem):
         else:
             painter.setPen(Qt.NoPen)
         if self.hovering:
-            painter.setBrush(QBrush(schemastyle.NODE_BACKGROUND_COLOR.lighter(150)))
+            painter.setBrush(QBrush(schemastyle.COMPONENT_BACKGROUND_COLOR.lighter(150)))
         else:
-            painter.setBrush(QBrush(schemastyle.NODE_BACKGROUND_COLOR))
+            painter.setBrush(QBrush(schemastyle.COMPONENT_BACKGROUND_COLOR))
 
-        if lod > 0.5:
+        if lod > 0.4:
             # Draw in high detail
             painter.drawRoundedRect(-self.compWidth // 2, -self.compHeight // 2,
                 self.compWidth, self.compHeight, 5, 5)
+
+            textrect = QRectF(-self.compWidth // 2, -self.compHeight // 2, self.compWidth, self.compHeight)
+            painter.setPen(schemastyle.COMPONENT_TEXT_COLOR)
+            painter.drawText(textrect, Qt.AlignCenter, self.compName)
         else:
             # Draw in low detail
             painter.drawRect(-self.compWidth // 2, -self.compHeight // 2,
@@ -77,7 +83,7 @@ class ComponentGI(QGraphicsItem):
             round(cur_y / schemastyle.GRID_Y_RES) * schemastyle.GRID_Y_RES)
     
     def contextMenuEvent(self, event):
-        print('node menu triggered')
+        print('COMPONENT menu triggered')
         # pos = event.scenePos()
         # point = self.view.mapFromScene(pos)
         # point = self.view.mapToGlobal(point)

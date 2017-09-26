@@ -61,13 +61,14 @@ class MainWindow(QMainWindow):
         self.schemaview = SchemaView()
         self.schemascene = SchemaScene()
 
-        for x in range(32):
-            for y in range(32):
-                comp = ComponentGI()
+        for x in range(8):
+            for y in range(8):
+                compname = 'N(' + str(x) + ',' + str(y) +')'
+                comp = ComponentGI(compname)
                 comp.setPos(x * 150, y * 150)
-                text = self.schemascene.addText('N(' + str(x) + ',' + str(y) +')')
-                text.setDefaultTextColor(schemastyle.NODE_TEXT_COLOR)
-                text.setParentItem(comp)
+                # text = self.schemascene.addText(compname)
+                # text.setDefaultTextColor(schemastyle.NODE_TEXT_COLOR)
+                # text.setParentItem(comp)
                 self.schemascene.addItem(comp)
 
         self.schemascene.updateSceneRect()
