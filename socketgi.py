@@ -32,20 +32,39 @@ class SocketGI(QGraphicsItem):
         self.sockName = name
         self.sockLocation = location
 
+        if self.sockLocation == SocketGI.LEFT:
+            self.sockBRect = QRectF(0, -self.sockHeight // 2, self.sockWidth, self.sockHeight)
+        else:
+            self.sockBRect = QRectF(-self.sockWidth, -self.sockHeight // 2, self.sockWidth, self.sockHeight)
+
+
     def boundingRect(self):
-        return QRectF(0, -self.sockHeight // 2, self.sockWidth, self.sockHeight)
+        return self.sockBRect
     
     def paint(self, painter, option, widget):
-        lod = option.levelOfDetailFromTransform(painter.worldTransform())
-        
-        if lod > 0.4:
-            # Draw in high detail
-            painter.drawRoundedRect(0, -self.compHeight // 2,
-                self.compWidth, self.compHeight, 3, 3)
+        # Draw in high detail
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QBrush(schemastyle.SOCKET_NEUTRAL_COLOR))
+        oldfont = painter.font()
+        font = QFont(oldfont)
+        font.setPixelSize(10)
+        painter.setFont(font)
+        if self.sockLocation == SocketGI.LEFT:
+            painter.drawEllipse(QPoint(self.sockHeight // 2, 0), 6, 6)
+            textrect = QRectF(self.sockHeight, -self.sockHeight // 2, self.sockWidth - self.sockHeight, self.sockHeight)
+            textrect.translate(0, 4)
+            painter.setPen(schemastyle.SOCKET_NAME_COLOR)
+            painter.drawText(textrect, Qt.AlignLeft, self.sockName)
         else:
-            # Draw in low detail
-            painter.drawRect(0, -self.compHeight // 2,
-                self.compWidth, self.compHeight)
+            painter.drawEllipse(QPoint(-self.sockHeight // 2, 0), 6, 6)
+            textrect = QRectF(-self.sockWidth, -self.sockHeight // 2, self.sockWidth - self.sockHeight, self.sockHeight)
+            textrect.translate(0, 4)
+            painter.setPen(schemastyle.SOCKET_NAME_COLOR)
+            painter.drawText(textrect, Qt.AlignRight, self.sockName)
+
+        # restore font
+        painter.setFont(oldfont)
+        
 
     def hoverEnterEvent(self, event):
         self.setCursor(Qt.CrossCursor)

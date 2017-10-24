@@ -20,8 +20,8 @@ class ComponentGI(QGraphicsItem):
     def __init__(self, name):
         super().__init__()
         
-        self.compWidth = 100
-        self.compHeight = 60
+        self.compWidth = 200
+        self.compHeight = 100
         self.snappingIsOn = True
 
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)

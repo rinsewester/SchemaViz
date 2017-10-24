@@ -57,15 +57,15 @@ class SchemaView(QGraphicsView):
         self.ensureVisible(QRectF(0,0,0,0))
 
     def setupMatrix(self):
-        scale = 2.0 ** ((self.zoomLevel - 250) / 50.0)
+        scale = 2.0 ** ((self.zoomLevel - 250) / 100.0)
         transform = QTransform()
         transform.scale(scale, scale)
         self.setTransform(transform)
 
     def zoomIn(self):
         self.zoomLevel += 10
-        if self.zoomLevel > 350:
-            self.zoomLevel = 350
+        if self.zoomLevel > 500:
+            self.zoomLevel = 500
         self.setupMatrix()
 
     def zoomOut(self):
