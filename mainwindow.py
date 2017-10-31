@@ -16,6 +16,7 @@ from PyQt5.QtGui import QIcon
 from schemaview import SchemaView, SchemaScene
 from componentgi import ComponentGI
 from socketgi import SocketGI
+from linkgi import LinkGI
 import schemastyle
 
 class MainWindow(QMainWindow):
@@ -65,14 +66,12 @@ class MainWindow(QMainWindow):
         for x in range(8):
             for y in range(8):
                 compname = 'N(' + str(x) + ',' + str(y) +')'
-                comp = ComponentGI(compname)
+                comp = ComponentGI(compname, leftSockets=['Alpha', 'Beta', 'Gamma'], rightSockets=['Delta', 'Epsilon'])
                 comp.setPos(x * 250, y * 150)
-                sockl = SocketGI('Alpha', SocketGI.RIGHT)
-                sockl.moveBy(0, 10)
-                # sockr = SocketGI('Beta', SocketGI.RIGHT)
-                sockl.setParentItem(comp)
-                # sockr.setParentItem(comp)
                 self.schemascene.addItem(comp)
+
+        link = LinkGI('LName', (200,200), (500,500))
+        self.schemascene.addItem(link)
 
         self.schemascene.updateSceneRect()
         self.schemaview.setScene(self.schemascene)

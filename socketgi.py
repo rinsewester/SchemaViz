@@ -23,7 +23,7 @@ class SocketGI(QGraphicsItem):
     def __init__(self, name, location):
         super().__init__()
         
-        self.sockWidth = 50
+        self.sockWidth = 65
         self.sockHeight = 20
 
         self.setAcceptHoverEvents(True)
@@ -52,15 +52,13 @@ class SocketGI(QGraphicsItem):
         if self.sockLocation == SocketGI.LEFT:
             painter.drawEllipse(QPoint(self.sockHeight // 2, 0), 6, 6)
             textrect = QRectF(self.sockHeight, -self.sockHeight // 2, self.sockWidth - self.sockHeight, self.sockHeight)
-            textrect.translate(0, 4)
             painter.setPen(schemastyle.SOCKET_NAME_COLOR)
-            painter.drawText(textrect, Qt.AlignLeft, self.sockName)
+            painter.drawText(textrect, Qt.AlignLeft | Qt.AlignVCenter, self.sockName)
         else:
             painter.drawEllipse(QPoint(-self.sockHeight // 2, 0), 6, 6)
             textrect = QRectF(-self.sockWidth, -self.sockHeight // 2, self.sockWidth - self.sockHeight, self.sockHeight)
-            textrect.translate(0, 4)
             painter.setPen(schemastyle.SOCKET_NAME_COLOR)
-            painter.drawText(textrect, Qt.AlignRight, self.sockName)
+            painter.drawText(textrect, Qt.AlignRight | Qt.AlignVCenter, self.sockName)
 
         # restore font
         painter.setFont(oldfont)

@@ -13,11 +13,12 @@ from PyQt5.QtWidgets import QWidget, QGraphicsItem, QPushButton, QVBoxLayout, QM
 from PyQt5.QtCore import QRectF, QRect, QPointF, QPoint, Qt, QVariant
 from PyQt5.QtGui import QColor, QPainter, QBrush, QPainterPath, QLinearGradient, QFont, QContextMenuEvent
 from collections import Counter
+from socketgi import SocketGI
 import schemastyle
 
 class ComponentGI(QGraphicsItem):
 
-    def __init__(self, name):
+    def __init__(self, name, leftSockets=[], rightSockets=[]):
         super().__init__()
         
         self.compWidth = 200
@@ -31,6 +32,27 @@ class ComponentGI(QGraphicsItem):
         self.hovering = False
 
         self.compName = name
+        self.leftSocketNames = leftSockets
+        self.rightSocketNames = rightSockets
+        self.leftSocketGItems = []
+        self.rightSocketGItems = []
+
+        # Create sockets for the left side
+        for ind, lsn in enumerate(self.leftSocketNames):
+            lsockGItem = SocketGI(lsn, SocketGI.LEFT)
+            hoffs = -(len(self.leftSocketNames) - 1) * 20 // 2
+            lsockGItem.moveBy(-self.compWidth // 2, hoffs + ind * 20)
+            lsockGItem.setParentItem(self)
+            self.leftSocketGItems.append(lsockGItem)
+
+        # Create sockets for the right side
+        for ind, rsn in enumerate(self.rightSocketNames):
+            rsockGItem = SocketGI(rsn, SocketGI.RIGHT)
+            hoffs = -(len(self.rightSocketNames) - 1) * 20 // 2
+            rsockGItem.moveBy(self.compWidth // 2, hoffs + ind * 20)
+            rsockGItem.setParentItem(self)
+            self.rightSocketGItems.append(rsockGItem)
+
 
     def boundingRect(self):
         return QRectF(-self.compWidth // 2, -self.compHeight // 2, self.compWidth, self.compHeight)
