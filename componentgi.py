@@ -96,6 +96,12 @@ class ComponentGI(QGraphicsItem):
         if change == QGraphicsItem.ItemPositionChange:
             newPos = self.snapToGrid(newPos)
             # update all the links such that the postions of the src/dst matches with the socket
+            for sock in self.leftSocketGItems.values():
+                if sock.link is not None:
+                    sock.link.updateShape()
+            for sock in self.rightSocketGItems.values():
+                if sock.link is not None:
+                    sock.link.updateShape()
         return super().itemChange(change, newPos)
 
     def snapToGrid(self, position):

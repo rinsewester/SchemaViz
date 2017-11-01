@@ -26,16 +26,10 @@ class LinkGI(QGraphicsPathItem):
         self.linkName = name
         self.srcSocket = srcSocket
         self.dstSocket = dstSocket
-        self.srcX, self.srcY = srcSocket.linkConnectionPos()
-        self.dstX, self.dstY = dstSocket.linkConnectionPos()
-        self.sockBRect = QRectF(min(self.srcX, self.dstX), min(self.srcY, self.dstY),
-            abs(self.srcX - self.dstX), abs(self.srcY - self.dstY))
+        self.srcSocket.link = self
+        self.dstSocket.link = self
 
-        # Create the bezier curve path
-        self.linkPath = QPainterPath()
-        self.linkPath.moveTo(self.srcX, self.srcY)
-        self.linkPath.cubicTo(self.srcX + 128, self.srcY, self.dstX - 128, self.dstY, self.dstX, self.dstY)
-        self.setPath(self.linkPath)
+        self.updateShape()
 
         # set the pen style
         self.linkPen = QPen()
@@ -43,6 +37,15 @@ class LinkGI(QGraphicsPathItem):
         self.linkPen.setCapStyle(Qt.RoundCap);
         self.linkPen.setColor(QColor(Qt.gray))
         self.setPen(self.linkPen)
+
+    def updateShape(self):
+        # Create the bezier curve path
+        srcX, srcY = self.srcSocket.linkConnectionPos()
+        dstX, dstY = self.dstSocket.linkConnectionPos()
+        linkPath = QPainterPath()
+        linkPath.moveTo(srcX, srcY)
+        linkPath.cubicTo(srcX + 128, srcY, dstX - 128, dstY, dstX, dstY)
+        self.setPath(linkPath)
 
     def hoverEnterEvent(self, event):
         self.linkPen.setColor(QColor(Qt.white))
