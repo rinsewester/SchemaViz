@@ -75,14 +75,14 @@ class MainWindow(QMainWindow):
         self.schemascene.addItem(comp2)
 
         link0 = LinkGI('link 0',
-            comp0.rightSocketGItems[0].linkConnectionPos(),
-            comp1.leftSocketGItems[0].linkConnectionPos())
+            comp0.rightSocketGItems['Out0'].linkConnectionPos(),
+            comp1.leftSocketGItems['In'].linkConnectionPos())
         link1 = LinkGI('link 1',
-            comp1.rightSocketGItems[0].linkConnectionPos(),
-            comp2.leftSocketGItems[0].linkConnectionPos())
+            comp1.rightSocketGItems['Out'].linkConnectionPos(),
+            comp2.leftSocketGItems['In0'].linkConnectionPos())
         link2 = LinkGI('link 2',
-            comp0.rightSocketGItems[1].linkConnectionPos(),
-            comp2.leftSocketGItems[1].linkConnectionPos())
+            comp0.rightSocketGItems['Out1'].linkConnectionPos(),
+            comp2.leftSocketGItems['In1'].linkConnectionPos())
         self.schemascene.addItem(link0)
         self.schemascene.addItem(link1)
         self.schemascene.addItem(link2)

@@ -20,7 +20,7 @@ class SocketGI(QGraphicsItem):
     LEFT = 0
     RIGHT = 1
 
-    def __init__(self, name, location):
+    def __init__(self, name, location, parent):
         super().__init__()
         
         self.sockWidth = 65
@@ -28,6 +28,8 @@ class SocketGI(QGraphicsItem):
 
         self.sockName = name
         self.sockLocation = location
+        self.parentComp = parent
+        self.link = None
 
         if self.sockLocation == SocketGI.LEFT:
             self.sockBRect = QRectF(0, -self.sockHeight // 2, self.sockWidth, self.sockHeight)

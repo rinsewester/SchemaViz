@@ -21,8 +21,8 @@ class ComponentGI(QGraphicsItem):
     def __init__(self, name, leftSockets=[], rightSockets=[]):
         super().__init__()
         
-        self.compWidth = 200
-        self.compHeight = 100
+        self.compWidth = 150
+        self.compHeight = 50
         self.snappingIsOn = True
 
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
@@ -32,26 +32,24 @@ class ComponentGI(QGraphicsItem):
         self.hovering = False
 
         self.compName = name
-        self.leftSocketNames = leftSockets
-        self.rightSocketNames = rightSockets
-        self.leftSocketGItems = []
-        self.rightSocketGItems = []
+        self.leftSocketGItems = {}
+        self.rightSocketGItems = {}
 
         # Create sockets for the left side
-        for ind, lsn in enumerate(self.leftSocketNames):
-            lsockGItem = SocketGI(lsn, SocketGI.LEFT)
-            hoffs = -(len(self.leftSocketNames) - 1) * 20 // 2
+        for ind, lsn in enumerate(leftSockets):
+            lsockGItem = SocketGI(lsn, SocketGI.LEFT, self)
+            hoffs = -(len(leftSockets) - 1) * 20 // 2
             lsockGItem.moveBy(-self.compWidth // 2, hoffs + ind * 20)
             lsockGItem.setParentItem(self)
-            self.leftSocketGItems.append(lsockGItem)
+            self.leftSocketGItems[lsn] = lsockGItem
 
         # Create sockets for the right side
-        for ind, rsn in enumerate(self.rightSocketNames):
-            rsockGItem = SocketGI(rsn, SocketGI.RIGHT)
-            hoffs = -(len(self.rightSocketNames) - 1) * 20 // 2
+        for ind, rsn in enumerate(rightSockets):
+            rsockGItem = SocketGI(rsn, SocketGI.RIGHT, self)
+            hoffs = -(len(rightSockets) - 1) * 20 // 2
             rsockGItem.moveBy(self.compWidth // 2, hoffs + ind * 20)
             rsockGItem.setParentItem(self)
-            self.rightSocketGItems.append(rsockGItem)
+            self.rightSocketGItems[rsn] = rsockGItem
 
 
     def boundingRect(self):
