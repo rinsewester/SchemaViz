@@ -26,9 +26,6 @@ class SocketGI(QGraphicsItem):
         self.sockWidth = 65
         self.sockHeight = 20
 
-        self.setAcceptHoverEvents(True)
-        self.hovering = False
-
         self.sockName = name
         self.sockLocation = location
 
@@ -62,17 +59,12 @@ class SocketGI(QGraphicsItem):
 
         # restore font
         painter.setFont(oldfont)
-        
 
-    def hoverEnterEvent(self, event):
-        self.setCursor(Qt.CrossCursor)
-        self.hovering = True
-        super().hoverEnterEvent(event)
+    def linkConnectionPos(self):
+        if self.sockLocation == SocketGI.LEFT:
+            scnpos = self.mapToScene(self.sockHeight / 2.0, 0.0)
+            return scnpos.x(), scnpos.y()
+        else:
+            scnpos = self.mapToScene(-self.sockHeight / 2.0, 0.0)
+            return scnpos.x(), scnpos.y()
 
-    def hoverLeaveEvent(self, event):
-        self.setCursor(Qt.ArrowCursor)
-        self.hovering = False
-        super().hoverLeaveEvent(event)
-
-            
-    

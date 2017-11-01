@@ -38,7 +38,7 @@ class LinkGI(QGraphicsPathItem):
         self.linkPen = QPen()
         self.linkPen.setWidth(4)
         self.linkPen.setCapStyle(Qt.RoundCap);
-        self.linkPen.setColor(QColor(Qt.white))
+        self.linkPen.setColor(QColor(Qt.gray))
         self.setPen(self.linkPen)
 
     def hoverEnterEvent(self, event):
