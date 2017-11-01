@@ -95,6 +95,7 @@ class ComponentGI(QGraphicsItem):
         newPos = value
         if change == QGraphicsItem.ItemPositionChange:
             newPos = self.snapToGrid(newPos)
+            # update all the links such that the postions of the src/dst matches with the socket
         return super().itemChange(change, newPos)
 
     def snapToGrid(self, position):

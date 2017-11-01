@@ -17,24 +17,27 @@ import schemastyle
 
 class LinkGI(QGraphicsPathItem):
 
-    def __init__(self, name, srcPos, dstPos):
+    def __init__(self, name, srcSocket, dstSocket):
         super().__init__()
 
         self.setAcceptHoverEvents(True)
         self.hovering = False
 
         self.linkName = name
-        self.srcX, self.srcY = srcPos
-        self.dstX, self.dstY = dstPos
+        self.srcSocket = srcSocket
+        self.dstSocket = dstSocket
+        self.srcX, self.srcY = srcSocket.linkConnectionPos()
+        self.dstX, self.dstY = dstSocket.linkConnectionPos()
         self.sockBRect = QRectF(min(self.srcX, self.dstX), min(self.srcY, self.dstY),
             abs(self.srcX - self.dstX), abs(self.srcY - self.dstY))
 
-        # set pen path
+        # Create the bezier curve path
         self.linkPath = QPainterPath()
         self.linkPath.moveTo(self.srcX, self.srcY)
         self.linkPath.cubicTo(self.srcX + 128, self.srcY, self.dstX - 128, self.dstY, self.dstX, self.dstY)
         self.setPath(self.linkPath)
 
+        # set the pen style
         self.linkPen = QPen()
         self.linkPen.setWidth(4)
         self.linkPen.setCapStyle(Qt.RoundCap);
