@@ -36,7 +36,6 @@ class SocketGI(QGraphicsItem):
         else:
             self.sockBRect = QRectF(-self.sockWidth, -self.sockHeight // 2, self.sockWidth, self.sockHeight)
 
-
     def boundingRect(self):
         return self.sockBRect
     

@@ -44,7 +44,7 @@ class LinkGI(QGraphicsPathItem):
         dstX, dstY = self.dstSocket.linkConnectionPos()
         linkPath = QPainterPath()
         linkPath.moveTo(srcX, srcY)
-        linkPath.cubicTo(srcX + 128, srcY, dstX - 128, dstY, dstX, dstY)
+        linkPath.cubicTo(srcX + 100, srcY, dstX - 100, dstY, dstX, dstY)
         self.setPath(linkPath)
 
     def hoverEnterEvent(self, event):
