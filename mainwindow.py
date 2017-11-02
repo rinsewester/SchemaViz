@@ -27,6 +27,11 @@ class MainWindow(QMainWindow):
 
     def initUI(self):
 
+        openAction = QAction(QIcon('images/open.png'), '&Open', self)
+        openAction.setShortcut('Ctrl+O')
+        openAction.setStatusTip('Open schematic')
+        openAction.triggered.connect(self.openFile)
+
         exitAction = QAction(QIcon('images/exit.png'), '&Exit', self)
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Exit application')
@@ -54,7 +59,7 @@ class MainWindow(QMainWindow):
 
         self.toolbar = self.addToolBar('toolbar')
         self.toolbar.setMovable(False)
-        self.toolbar.addAction(exitAction)
+        self.toolbar.addAction(openAction)
 
         # Use mac unitfied toolbar when running on mac
         if sys.platform == 'darwin':
@@ -73,13 +78,18 @@ class MainWindow(QMainWindow):
         comp2 = ComponentGI('comp 2', leftSockets=['In0', 'In1'], rightSockets=['Out'])
         comp2.setPos(500, 0)
         self.schemascene.addItem(comp2)
+        comp3 = ComponentGI('comp 3', leftSockets=['In'], rightSockets=['Out'])
+        comp3.setPos(700, 0)
+        self.schemascene.addItem(comp3)
 
         link0 = LinkGI('link 0', comp0.rightSocketGItems['Out0'], comp1.leftSocketGItems['In'])
         link1 = LinkGI('link 1', comp1.rightSocketGItems['Out'], comp2.leftSocketGItems['In0'])
         link2 = LinkGI('link 2', comp0.rightSocketGItems['Out1'], comp2.leftSocketGItems['In1'])
+        link3 = LinkGI('link 3', comp2.rightSocketGItems['Out'], comp3.leftSocketGItems['In'])
         self.schemascene.addItem(link0)
         self.schemascene.addItem(link1)
         self.schemascene.addItem(link2)
+        self.schemascene.addItem(link3)
 
         self.schemascene.updateSceneRect()
         self.schemaview.setScene(self.schemascene)
@@ -96,6 +106,9 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Schema designer')
         self.setGeometry(0, 30, 1300, 750)
         self.show()
+
+    def openFile(self):
+        print('open file....')
 
 if __name__ == '__main__':
 

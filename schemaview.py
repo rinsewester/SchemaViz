@@ -22,7 +22,7 @@ class SchemaView(QGraphicsView):
         self.setDragMode(QGraphicsView.RubberBandDrag)
         self.setOptimizationFlags(QGraphicsView.DontSavePainterState)
         self.setViewportUpdateMode(QGraphicsView.SmartViewportUpdate)
-        self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
+        # self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.setRenderHint(QPainter.Antialiasing, True)
         self.zoomLevel = 250
 
@@ -79,8 +79,7 @@ class SchemaScene(QGraphicsScene):
 
     def __init__(self):
         super().__init__()
-        self.lockScene = False
-        self.changed.connect(self.updateSceneRect)
+        # self.changed.connect(self.updateSceneRect)
 
     def drawBackground(self, painter, rect):
         painter.fillRect(rect, schemastyle.BACKGROUND_COLOR)
@@ -88,9 +87,6 @@ class SchemaScene(QGraphicsScene):
     def updateSceneRect(self):
         # Is called when there is a change in the scene
         # Update scene size to fit the current layout of the graph
-        if not self.lockScene:
-            rect = self.itemsBoundingRect()
-            rect = QRectF(rect.x() - 50, rect.y() - 50, rect.width() + 100, rect.height() + 100)
-            self.setSceneRect(rect)
-        else:
-            self.lockScene = False
+        rect = self.itemsBoundingRect()
+        rect = QRectF(rect.x() - 50, rect.y() - 50, rect.width() + 100, rect.height() + 100)
+        self.setSceneRect(rect)
