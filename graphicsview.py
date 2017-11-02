@@ -56,7 +56,7 @@ class GraphicsScene(QGraphicsScene):
     def __init__(self):
         super().__init__()
 
-        self.drawGrid = False
+        self.drawGrid = True
         self.lockScene = False
 
         self.changed.connect(self.updateSceneRect)
