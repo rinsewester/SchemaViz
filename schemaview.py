@@ -27,9 +27,13 @@ class SchemaView(QGraphicsView):
         self.setDragMode(QGraphicsView.RubberBandDrag)
         self.setOptimizationFlags(QGraphicsView.DontSavePainterState)
         self.setViewportUpdateMode(QGraphicsView.SmartViewportUpdate)
-        # self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
         self.setRenderHint(QPainter.Antialiasing, True)
-        self.zoomLevel = 250
+
+        self.minZoomLevel = 0
+        self.maxZoomLevel = 400
+        self.defaultZoomLevel = 200
+
+        self.resetView()
 
     def wheelEvent(self, event):
         #Catch wheelEvent and zoom instead of scroll when Ctrl is pressed
@@ -57,26 +61,26 @@ class SchemaView(QGraphicsView):
         super().keyReleaseEvent(event)
 
     def resetView(self):
-        self.zoomLevel = 250
+        self.zoomLevel = self.defaultZoomLevel
         self.setupMatrix()
-        self.ensureVisible(QRectF(0,0,0,0))
+        self.ensureVisible(QRectF(0, 0, 0, 0))
 
     def setupMatrix(self):
-        scale = 2.0 ** ((self.zoomLevel - 250) / 100.0)
+        scale = 2.0 ** ((self.zoomLevel - self.maxZoomLevel // 2) / 100.0)
         transform = QTransform()
         transform.scale(scale, scale)
         self.setTransform(transform)
 
     def zoomIn(self):
         self.zoomLevel += 10
-        if self.zoomLevel > 500:
-            self.zoomLevel = 500
+        if self.zoomLevel > self.maxZoomLevel:
+            self.zoomLevel = self.maxZoomLevel
         self.setupMatrix()
 
     def zoomOut(self):
         self.zoomLevel -= 10
-        if self.zoomLevel < 0:
-            self.zoomLevel = 0
+        if self.zoomLevel < self.minZoomLevel:
+            self.zoomLevel = self.minZoomLevel
         self.setupMatrix()
 
 
@@ -91,10 +95,17 @@ class SchemaScene(QGraphicsScene):
 
     def loadFromFile(self, filename):
         schem = Schematic()
-        # schem.loadFromFile(filename)
+        schem.loadFromFile(filename)
 
         # remove all items from the scene
         self.clear()
+
+        for cmpname in schem.nodes():
+            comp = ComponentGI(cmpname, leftSockets=schem.node[cmpname]['leftsockets'],
+                rightSockets=schem.node[cmpname]['rightsockets'])
+            comp.setPos(400, 400)
+            # comp.setToolTip("<b>{}</b><br/>more info".format(cmpname))
+            self.addItem(comp)
 
         # Add some components
         comp0 = ComponentGI('comp 0', leftSockets=['In'], rightSockets=['Out0', 'Out1'])

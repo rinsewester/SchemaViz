@@ -64,7 +64,7 @@ class MainWindow(QMainWindow):
 
         self.schemaview = SchemaView()
         self.schemascene = SchemaScene()
-        self.schemascene.loadFromFile('')
+        self.schemascene.loadFromFile('schemas/schem1.json')
         self.schemaview.setScene(self.schemascene)
         self.schemaview.resetView()
 
