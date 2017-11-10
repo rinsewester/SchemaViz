@@ -14,9 +14,6 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 
 from schemaview import SchemaView, SchemaScene
-from componentgi import ComponentGI
-from socketgi import SocketGI
-from linkgi import LinkGI
 import schemastyle
 
 class MainWindow(QMainWindow):
@@ -67,34 +64,9 @@ class MainWindow(QMainWindow):
 
         self.schemaview = SchemaView()
         self.schemascene = SchemaScene()
-
-        # Add a few compoents
-        comp0 = ComponentGI('comp 0', leftSockets=['In'], rightSockets=['Out0', 'Out1'])
-        comp0.setPos(0, 0)
-        self.schemascene.addItem(comp0)
-        comp1 = ComponentGI('comp 1', leftSockets=['In'], rightSockets=['Out'])
-        comp1.setPos(250, -100)
-        self.schemascene.addItem(comp1)
-        comp2 = ComponentGI('comp 2', leftSockets=['In0', 'In1'], rightSockets=['Out'])
-        comp2.setPos(500, 0)
-        self.schemascene.addItem(comp2)
-        comp3 = ComponentGI('comp 3', leftSockets=['In'], rightSockets=['Out'])
-        comp3.setPos(700, 0)
-        self.schemascene.addItem(comp3)
-
-        link0 = LinkGI('link 0', comp0.rightSocketGItems['Out0'], comp1.leftSocketGItems['In'])
-        link1 = LinkGI('link 1', comp1.rightSocketGItems['Out'], comp2.leftSocketGItems['In0'])
-        link2 = LinkGI('link 2', comp0.rightSocketGItems['Out1'], comp2.leftSocketGItems['In1'])
-        link3 = LinkGI('link 3', comp2.rightSocketGItems['Out'], comp3.leftSocketGItems['In'])
-        self.schemascene.addItem(link0)
-        self.schemascene.addItem(link1)
-        self.schemascene.addItem(link2)
-        self.schemascene.addItem(link3)
-
-        self.schemascene.updateSceneRect()
+        self.schemascene.loadFromFile('')
         self.schemaview.setScene(self.schemascene)
         self.schemaview.resetView()
-        self.schemaview.update()
 
         # connect the view menu actions to the graphwidget
         zoomInAction.triggered.connect(self.schemaview.zoomIn)
