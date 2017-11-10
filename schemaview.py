@@ -100,36 +100,33 @@ class SchemaScene(QGraphicsScene):
         # remove all items from the scene
         self.clear()
 
+        # Create components based on graph and add them to the scene
+        compdict = {}  # TODO: add better way to address components and links in scene
         for cmpname in schem.nodes():
             comp = ComponentGI(cmpname, leftSockets=schem.node[cmpname]['leftsockets'],
                 rightSockets=schem.node[cmpname]['rightsockets'])
             comp.setPos(400, 400)
-            # comp.setToolTip("<b>{}</b><br/>more info".format(cmpname))
+            # TODO: add better description in tooltip after <br/>
+            comp.setToolTip("<b>{}</b>".format(cmpname))
             self.addItem(comp)
+            compdict[cmpname] = comp
 
-        # Add some components
-        comp0 = ComponentGI('comp 0', leftSockets=['In'], rightSockets=['Out0', 'Out1'])
-        comp0.setPos(0, 0)
-        self.addItem(comp0)
-        comp1 = ComponentGI('comp 1', leftSockets=['In'], rightSockets=['Out'])
-        comp1.setPos(250, -100)
-        self.addItem(comp1)
-        comp2 = ComponentGI('comp 2', leftSockets=['In0', 'In1'], rightSockets=['Out'])
-        comp2.setPos(500, 0)
-        self.addItem(comp2)
-        comp3 = ComponentGI('comp 3', leftSockets=['In'], rightSockets=['Out'])
-        comp3.setPos(700, 0)
-        self.addItem(comp3)
-
-        # Add the links between components
-        link0 = LinkGI('link 0', comp0.rightSocketGItems['Out0'], comp1.leftSocketGItems['In'])
-        self.addItem(link0)
-        link1 = LinkGI('link 1', comp1.rightSocketGItems['Out'], comp2.leftSocketGItems['In0'])
-        self.addItem(link1)
-        link2 = LinkGI('link 2', comp0.rightSocketGItems['Out1'], comp2.leftSocketGItems['In1'])
-        self.addItem(link2)
-        link3 = LinkGI('link 3', comp2.rightSocketGItems['Out'], comp3.leftSocketGItems['In'])
-        self.addItem(link3)
+        # Add the links as well
+        for src, dst, linkattr in schem.edges(data=True):
+            srccomp = compdict[src]
+            dstcomp = compdict[dst]
+            srcsockname = linkattr['srcoutp']
+            dstsockname = linkattr['dstinp']
+            if srcsockname in srccomp.leftSocketGItems.keys():
+                srcsock = srccomp.leftSocketGItems[srcsockname]
+            else:
+                srcsock = srccomp.rightSocketGItems[srcsockname]
+            if dstsockname in dstcomp.leftSocketGItems.keys():
+                dstsock = dstcomp.leftSocketGItems[dstsockname]
+            else:
+                dstsock = dstcomp.rightSocketGItems[dstsockname]
+            link = LinkGI('', srcsock, dstsock)
+            self.addItem(link)
         
         # Update the scene bounding rectangle for a full view of the schematic
         self.updateSceneRect()
