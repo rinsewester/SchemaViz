@@ -92,7 +92,7 @@ class Schematic(nx.MultiDiGraph):
         # Load all components and their attributes
         for jscomp in jsondata['components']:
             compName = jscomp['name']
-            compPos = jscomp['pos'][0], jscomp['pos'][1]
+            compPos = jscomp.get('pos', (0, 0))
             leftsockets = jscomp.get('leftsockets', [])
             rightsockets = jscomp.get('rightsockets', [])
             self.add_component(compName, leftsockets=leftsockets, rightsockets=rightsockets, pos=compPos)
