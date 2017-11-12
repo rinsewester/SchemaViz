@@ -80,7 +80,17 @@ class MainWindow(QMainWindow):
         self.show()
 
     def openFile(self):
-        print('open file....')
+        filename, _ = QFileDialog.getOpenFileName( self, 'Open schematic', './schemas')
+
+        if filename != '':
+            try:
+                self.schemascene.loadFromFile(filename)
+                self.schemaview.setScene(self.schemascene)
+                self.schemaview.resetView()
+            except (FileNotFoundError, ValueError, KeyError) as e:
+                QMessageBox.critical(
+                    self, 'Error opening file',
+                    '<b>Error opening file:</b>' + '\n\n' + str(e))
 
 if __name__ == '__main__':
 
