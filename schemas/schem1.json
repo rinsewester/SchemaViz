@@ -4,23 +4,28 @@
     "components": [
         {
             "name" : "P1",
+            "pos" : [0, 100],
             "rightsockets" : ["out"]
         },
         {
             "name" : "P2",
+            "pos" : [0, 300],
             "rightsockets" : ["out"]
         },
         {
             "name" : "Op",
+            "pos" : [200, 200],
             "leftsockets" : ["in0", "in1"],
             "rightsockets" : ["out0", "out1"]
         },
         {
             "name" : "C1",
+            "pos" : [400, 100],
             "leftsockets" : ["in"]
         },
         {
             "name" : "C2",
+            "pos" : [400, 300],
             "leftsockets" : ["in"]
         }
     ],

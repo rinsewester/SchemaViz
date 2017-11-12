@@ -50,7 +50,7 @@ class Schematic(nx.MultiDiGraph):
         super().add_edge(src, dst, srcoutp=srcoutp, dstinp=dstinp)
 
 
-    def add_component(self, name, leftsockets=[], rightsockets=[]):
+    def add_component(self, name, leftsockets=[], rightsockets=[], pos=(0,0)):
         """
         Add a component to the schematic.
 
@@ -63,7 +63,7 @@ class Schematic(nx.MultiDiGraph):
         leftsockets: list of names for sockets to which a link can be connected, shown on the left side of component
         rightsockets: similar to leftsockets except shown on the right side of component
         """
-        super().add_node(name, leftsockets=leftsockets, rightsockets=rightsockets)
+        super().add_node(name, leftsockets=leftsockets, rightsockets=rightsockets, pos=pos)
 
     def loadFromFile(self, filename):
         """
@@ -92,9 +92,10 @@ class Schematic(nx.MultiDiGraph):
         # Load all components and their attributes
         for jscomp in jsondata['components']:
             compName = jscomp['name']
+            compPos = jscomp['pos'][0], jscomp['pos'][1]
             leftsockets = jscomp.get('leftsockets', [])
             rightsockets = jscomp.get('rightsockets', [])
-            self.add_component(compName, leftsockets=leftsockets, rightsockets=rightsockets)
+            self.add_component(compName, leftsockets=leftsockets, rightsockets=rightsockets, pos=compPos)
 
         # Load all links and their attributes
         for jslink in jsondata['links']:
