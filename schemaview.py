@@ -105,10 +105,9 @@ class SchemaScene(QGraphicsScene):
         for cmpname in schem.nodes():
             comp = ComponentGI(cmpname, leftSockets=schem.node[cmpname]['leftsockets'],
                 rightSockets=schem.node[cmpname]['rightsockets'])
-            xpos, ypos = schem.node[cmpname]['pos']
-            comp.setPos(xpos, ypos)
+            comp.location = schem.node[cmpname]['pos']
             # TODO: add better description in tooltip after <br/>
-            comp.setToolTip("<b>{}</b>".format(cmpname))
+            comp.setToolTip("<b>{}</b><br/>pos: {}".format(cmpname, comp.location))
             self.addItem(comp)
             compdict[cmpname] = comp
 

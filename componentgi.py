@@ -51,6 +51,23 @@ class ComponentGI(QGraphicsItem):
             rsockGItem.setParentItem(self)
             self.rightSocketGItems[rsn] = rsockGItem
 
+    @property
+    def name(self):
+        return self.compName
+
+    @name.setter
+    def name(self, name):
+        self.compName = name
+        self.update()
+
+    @property
+    def location(self):
+        return self.x(), self.y()
+
+    @location.setter
+    def location(self, location):
+        x, y = location
+        self.setPos(x, y)
 
     def boundingRect(self):
         return QRectF(-self.compWidth // 2, -self.compHeight // 2, self.compWidth, self.compHeight)
@@ -79,7 +96,6 @@ class ComponentGI(QGraphicsItem):
             # Draw in low detail
             painter.drawRect(-self.compWidth // 2, -self.compHeight // 2,
                 self.compWidth, self.compHeight)
-
 
     def hoverEnterEvent(self, event):
         self.setCursor(Qt.PointingHandCursor)

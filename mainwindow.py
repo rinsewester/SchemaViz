@@ -29,6 +29,11 @@ class MainWindow(QMainWindow):
         openAction.setStatusTip('Open schematic')
         openAction.triggered.connect(self.openFile)
 
+        saveAction = QAction(QIcon('images/save.png'), '&Save', self)
+        saveAction.setShortcut('Ctrl+S')
+        saveAction.setStatusTip('Save schematic')
+        saveAction.triggered.connect(self.saveFile)
+
         exitAction = QAction(QIcon('images/exit.png'), '&Exit', self)
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Exit application')
@@ -57,6 +62,7 @@ class MainWindow(QMainWindow):
         self.toolbar = self.addToolBar('toolbar')
         self.toolbar.setMovable(False)
         self.toolbar.addAction(openAction)
+        self.toolbar.addAction(saveAction)
 
         # Use mac unitfied toolbar when running on mac
         if sys.platform == 'darwin':
@@ -91,6 +97,9 @@ class MainWindow(QMainWindow):
                 QMessageBox.critical(
                     self, 'Error opening file',
                     '<b>Error opening file:</b>' + '\n\n' + str(e))
+
+    def saveFile(self):
+        print('Saving file...')
 
 if __name__ == '__main__':
 

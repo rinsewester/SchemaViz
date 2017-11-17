@@ -17,7 +17,7 @@ import schemastyle
 
 class LinkGI(QGraphicsPathItem):
 
-    def __init__(self, name, srcSocket, dstSocket):
+    def __init__(self, name, srcSocket, dstSocket, thickness=2):
         super().__init__()
 
         self.setAcceptHoverEvents(True)
@@ -33,7 +33,7 @@ class LinkGI(QGraphicsPathItem):
 
         # set the pen style
         self.linkPen = QPen()
-        self.linkPen.setWidth(4)
+        self.linkPen.setWidth(thickness)
         self.linkPen.setCapStyle(Qt.RoundCap);
         self.linkPen.setColor(QColor(Qt.gray))
         self.setPen(self.linkPen)
