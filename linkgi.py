@@ -57,5 +57,23 @@ class LinkGI(QGraphicsPathItem):
         self.setPen(self.linkPen)
         super().hoverLeaveEvent(event)
 
+    @property
+    def name(self):
+        return self.linkName
+
+    @name.setter
+    def name(self, name):
+        self.linkName = name
+        self.update()
+
+    @property
+    def thickness(self):
+        return self.linkPen.width()
+
+    @thickness.setter
+    def thickness(self, thickness):
+        self.linkPen.setWidth(thickness)
+        self.setPen(self.linkPen)
+        self.update()
             
     

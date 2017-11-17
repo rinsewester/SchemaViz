@@ -126,6 +126,7 @@ class SchemaScene(QGraphicsScene):
             else:
                 dstsock = dstcomp.rightSocketGItems[dstsockname]
             link = LinkGI('', srcsock, dstsock)
+            link.thickness = 3
             self.addItem(link)
         
         # Update the scene bounding rectangle for a full view of the schematic
