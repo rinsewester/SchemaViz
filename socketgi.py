@@ -69,3 +69,13 @@ class SocketGI(QGraphicsItem):
             scnpos = self.mapToScene(-self.sockHeight / 2.0, 0.0)
             return scnpos.x(), scnpos.y()
 
+    @property
+    def name(self):
+        return self.sockName
+
+    @name.setter
+    def name(self, name):
+        self.sockName = name
+        self.update()
+
+

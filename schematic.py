@@ -11,6 +11,9 @@ from collections import OrderedDict
 class Schematic(nx.MultiDiGraph):
     """
     Class for modeling schematics.
+
+    TODO: check if component already  exists and allow for multiple 
+       connections between the same two components but on different sockets
     """
 
     def __init__(self):
@@ -21,7 +24,7 @@ class Schematic(nx.MultiDiGraph):
         self.version = '0.0.1'
         
 
-    def add_link(self, src, dst, srcoutp, dstinp):
+    def add_link(self, src, dst, srcoutp, dstinp, name=''):
         """
         Add a link to the schematic.
 
@@ -47,7 +50,12 @@ class Schematic(nx.MultiDiGraph):
         if dstinp not in (self.node[dst]['leftsockets'] + self.node[dst]['rightsockets']):
             raise ValueError('No socket named ' + dstinp + ' for destination node ' + dst)
 
-        super().add_edge(src, dst, srcoutp=srcoutp, dstinp=dstinp)
+        if name == '':
+            linkName = "{}.{}>{}.{}".format(src, srcoutp, dst, dstinp)
+        else:
+            linkName = name
+
+        super().add_edge(src, dst, srcoutp=srcoutp, dstinp=dstinp, name=linkName)
 
 
     def add_component(self, name, leftsockets=[], rightsockets=[], pos=(0,0)):
