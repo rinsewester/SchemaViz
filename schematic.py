@@ -20,9 +20,6 @@ class Schematic(nx.MultiDiGraph):
         super().__init__()
 
         # other init code for the schematics 
-        self.name = 'Schematic0'
-        self.version = '0.0.1'
-        
 
     def add_link(self, src, dst, srcoutp, dstinp, name=''):
         """
@@ -92,11 +89,6 @@ class Schematic(nx.MultiDiGraph):
 
         jsondata = json.loads(jsonstr)
 
-        # make sure the name becomes camelcase without spaces: required by CLaSH
-        namestr = jsondata['name'].strip()
-        self.name = namestr
-        self.version = jsondata['version']
-
         # Load all components and their attributes
         for jscomp in jsondata['components']:
             compName = jscomp['name']
@@ -133,10 +125,6 @@ class Schematic(nx.MultiDiGraph):
 
         # Put all info into a temporary dict which will be transformed into a json string
         graphDict = OrderedDict({})
-
-        # First save schematic properties/attributes: name and file version
-        graphDict['name'] = self.name
-        graphDict['version'] = self.version
         
         # Store all the component of schematic in the temporary dict
         components = []
