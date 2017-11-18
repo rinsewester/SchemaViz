@@ -159,10 +159,14 @@ class SchemaScene(QGraphicsScene):
             schem.add_component(compgi.name, leftsockets=leftSocketNames, rightsockets=rightSocketNames, pos=compgi.location)
 
         for linkgi in self.links.values():
-            print("storing link: ", linkgi.name)
+            srcSocketname = linkgi.srcSocket.name
+            dstSocketname = linkgi.dstSocket.name
+            srcCompname = linkgi.srcSocket.parentComp.name
+            dstCompname = linkgi.dstSocket.parentComp.name
+            schem.add_link(srcCompname, dstCompname, srcSocketname, dstSocketname, name=linkgi.name)
 
         print("storing schematic to file:", filename)
-        # schem.storeToFile(filename)
+        schem.storeToFile(filename)
 
     def updateSceneRect(self):
         # Is called when there is a change in the scene

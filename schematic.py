@@ -128,13 +128,14 @@ class Schematic(nx.MultiDiGraph):
         
         # Store all the component of schematic in the temporary dict
         components = []
-        for compName, sockets in self.nodes(data=True):
+        for compName, compattr in self.nodes(data=True):
             compdict = OrderedDict({})
             compdict['name'] = compName
-            if sockets['leftsockets'] != []:
-                compdict['leftsockets'] = sockets['leftsockets']
-            if sockets['rightsockets'] != []:
-                compdict['rightsockets'] = sockets['rightsockets']
+            compdict['pos'] = compattr['pos']
+            if compattr['leftsockets'] != []:
+                compdict['leftsockets'] = compattr['leftsockets']
+            if compattr['rightsockets'] != []:
+                compdict['rightsockets'] = compattr['rightsockets']
             components.append(compdict)
 
         # add all components to temporary dict in form of a list
