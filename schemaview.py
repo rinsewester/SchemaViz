@@ -105,6 +105,9 @@ class SchemaScene(QGraphicsScene):
     def drawBackground(self, painter, rect):
         painter.fillRect(rect, schemastyle.BACKGROUND_COLOR)
 
+
+    # TODO add function like setSchema to keep schema object alive or 
+    #   easy graph operations like find successors and DFS algorithms
     def loadFromFile(self, filename):
         schem = Schematic()
         schem.loadFromFile(filename)
@@ -144,7 +147,22 @@ class SchemaScene(QGraphicsScene):
         self.updateSceneRect()
 
     def saveToFile(self, filename):
-        print("saveToFile {} not yet implemented.".format(filename))
+        schem = Schematic()
+
+        for compgi in self.components.values():
+            leftSocketNames = []
+            for lsi in compgi.leftSocketGItems.values():
+                leftSocketNames.append(lsi.name)
+            rightSocketNames = []
+            for rsi in compgi.rightSocketGItems.values():
+                rightSocketNames.append(rsi.name)
+            schem.add_component(compgi.name, leftsockets=leftSocketNames, rightsockets=rightSocketNames, pos=compgi.location)
+
+        for linkgi in self.links.values():
+            print("storing link: ", linkgi.name)
+
+        print("storing schematic to file:", filename)
+        # schem.storeToFile(filename)
 
     def updateSceneRect(self):
         # Is called when there is a change in the scene

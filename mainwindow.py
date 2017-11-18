@@ -18,6 +18,8 @@ import schemastyle
 
 class MainWindow(QMainWindow):
 
+    DEFAULT_FILE = 'schemas/schem1.json'
+
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -70,7 +72,7 @@ class MainWindow(QMainWindow):
 
         self.schemaview = SchemaView()
         self.schemascene = SchemaScene()
-        self.schemascene.loadFromFile('schemas/schem1.json')
+        self.schemascene.loadFromFile(MainWindow.DEFAULT_FILE)
         self.schemaview.setScene(self.schemascene)
         self.schemaview.resetView()
 
@@ -99,7 +101,7 @@ class MainWindow(QMainWindow):
                     '<b>Error opening file:</b>' + '\n\n' + str(e))
 
     def saveFile(self):
-        print('Saving file...')
+        self.schemascene.saveToFile(MainWindow.DEFAULT_FILE+'.saved')
 
 if __name__ == '__main__':
 
