@@ -98,6 +98,7 @@ class Schematic(nx.MultiDiGraph):
             self.add_component(compName, leftsockets=leftsockets, rightsockets=rightsockets, pos=compPos)
 
         # Load all links and their attributes
+        # TODO: add thickness property
         for jslink in jsondata['links']:
             sourceComp, sourceSocket = jslink['src'].split('.')
             destinationComp, destinationSocket = jslink['dst'].split('.')

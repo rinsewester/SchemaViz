@@ -165,7 +165,6 @@ class SchemaScene(QGraphicsScene):
             dstCompname = linkgi.dstSocket.parentComp.name
             schem.add_link(srcCompname, dstCompname, srcSocketname, dstSocketname, name=linkgi.name)
 
-        print("storing schematic to file:", filename)
         schem.storeToFile(filename)
 
     def updateSceneRect(self):
