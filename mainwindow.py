@@ -36,12 +36,20 @@ class MainWindow(QMainWindow):
         saveAction.setStatusTip('Save schematic')
         saveAction.triggered.connect(self.saveFile)
 
+        saveAsAction = QAction(QIcon('images/save.png'), 'Save &as', self)
+        saveAsAction.setShortcut('Ctrl+Shift+S')
+        saveAsAction.setStatusTip('Save schematic as')
+        saveAsAction.triggered.connect(self.saveFileAs)
+
         exitAction = QAction(QIcon('images/exit.png'), '&Exit', self)
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Exit application')
         exitAction.triggered.connect(qApp.quit)
 
-        graphmenu = self.menuBar().addMenu('&Graph')
+        graphmenu = self.menuBar().addMenu('&Schema')
+        graphmenu.addAction(openAction)
+        graphmenu.addAction(saveAction)
+        graphmenu.addAction(saveAsAction)
         graphmenu.addAction(exitAction)
 
         resetZoomAction = QAction('&Reset zoom', self)
@@ -102,6 +110,9 @@ class MainWindow(QMainWindow):
 
     def saveFile(self):
         self.schemascene.saveToFile(MainWindow.DEFAULT_FILE+'.saved')
+
+    def saveFileAs(self):
+        print('Saving file as.....')
 
 if __name__ == '__main__':
 
