@@ -12,7 +12,7 @@ import sys
 from PyQt5.QtWidgets import QWidget, QGraphicsItem, QPushButton, QVBoxLayout, QMenu, QAction, QInputDialog, QMessageBox
 from PyQt5.QtCore import QRectF, QRect, QPointF, QPoint, Qt, QVariant
 from PyQt5.QtGui import QColor, QPainter, QBrush, QPainterPath, QLinearGradient, QFont, QContextMenuEvent
-from collections import Counter
+from collections import Counter, OrderedDict
 from socketgi import SocketGI
 import schemastyle
 
@@ -32,8 +32,8 @@ class ComponentGI(QGraphicsItem):
         self.hovering = False
 
         self.compName = name
-        self.leftSocketGItems = {}
-        self.rightSocketGItems = {}
+        self.leftSocketGItems = OrderedDict()
+        self.rightSocketGItems = OrderedDict()
 
         # Create sockets for the left side
         for ind, lsn in enumerate(leftSockets):
