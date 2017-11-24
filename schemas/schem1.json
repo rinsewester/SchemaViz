@@ -1,51 +1,77 @@
 {
-    "name": "Simple schema1",
-    "version" : "0.0.1",
     "components": [
         {
-            "name" : "P1",
-            "pos" : [0, 100],
-            "rightsockets" : ["out"]
+            "name": "P2",
+            "pos": [
+                0.0,
+                300.0
+            ],
+            "rightsockets": [
+                "out"
+            ]
         },
         {
-            "name" : "P2",
-            "pos" : [0, 300],
-            "rightsockets" : ["out"]
+            "name": "Op",
+            "pos": [
+                200.0,
+                200.0
+            ],
+            "leftsockets": [
+                "in0",
+                "in1"
+            ],
+            "rightsockets": [
+                "out0",
+                "out1"
+            ]
         },
         {
-            "name" : "Op",
-            "pos" : [200, 200],
-            "leftsockets" : ["in0", "in1"],
-            "rightsockets" : ["out0", "out1"]
+            "name": "P1",
+            "pos": [
+                0.0,
+                100.0
+            ],
+            "rightsockets": [
+                "out"
+            ]
         },
         {
-            "name" : "C1",
-            "pos" : [400, 100],
-            "leftsockets" : ["in"]
+            "name": "C1",
+            "pos": [
+                400.0,
+                100.0
+            ],
+            "leftsockets": [
+                "in"
+            ]
         },
         {
-            "name" : "C2",
-            "pos" : [400, 300],
-            "leftsockets" : ["in"]
+            "name": "C2",
+            "pos": [
+                400.0,
+                300.0
+            ],
+            "leftsockets": [
+                "in"
+            ]
         }
     ],
-
     "links": [
-        {
-            "src": "P1.out",
-            "dst": "Op.in0"
-        },
         {
             "src": "P2.out",
             "dst": "Op.in1"
+        },
+        {
+            "src": "Op.out1",
+            "dst": "C2.in"
         },
         {
             "src": "Op.out0",
             "dst": "C1.in"
         },
         {
-            "src": "Op.out1",
-            "dst": "C2.in"
+            "src": "P1.out",
+            "dst": "Op.in0"
         }
     ]
 }

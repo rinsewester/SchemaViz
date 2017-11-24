@@ -18,6 +18,8 @@ import schemastyle
 
 class MainWindow(QMainWindow):
 
+    DEFAULT_FILE = 'schemas/schem1.json'
+
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -34,12 +36,20 @@ class MainWindow(QMainWindow):
         saveAction.setStatusTip('Save schematic')
         saveAction.triggered.connect(self.saveFile)
 
+        saveAsAction = QAction(QIcon('images/save.png'), 'Save &as', self)
+        saveAsAction.setShortcut('Ctrl+Shift+S')
+        saveAsAction.setStatusTip('Save schematic as')
+        saveAsAction.triggered.connect(self.saveFileAs)
+
         exitAction = QAction(QIcon('images/exit.png'), '&Exit', self)
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Exit application')
         exitAction.triggered.connect(qApp.quit)
 
-        graphmenu = self.menuBar().addMenu('&Graph')
+        graphmenu = self.menuBar().addMenu('&Schema')
+        graphmenu.addAction(openAction)
+        graphmenu.addAction(saveAction)
+        graphmenu.addAction(saveAsAction)
         graphmenu.addAction(exitAction)
 
         resetZoomAction = QAction('&Reset zoom', self)
@@ -68,9 +78,11 @@ class MainWindow(QMainWindow):
         if sys.platform == 'darwin':
             self.setUnifiedTitleAndToolBarOnMac(True)
 
+        self.currentFile = MainWindow.DEFAULT_FILE
+
         self.schemaview = SchemaView()
         self.schemascene = SchemaScene()
-        self.schemascene.loadFromFile('schemas/schem1.json')
+        self.schemascene.loadFromFile(self.currentFile)
         self.schemaview.setScene(self.schemascene)
         self.schemaview.resetView()
 
@@ -90,7 +102,8 @@ class MainWindow(QMainWindow):
 
         if filename != '':
             try:
-                self.schemascene.loadFromFile(filename)
+                self.currentFile = filename
+                self.schemascene.loadFromFile(self.currentFile)
                 self.schemaview.setScene(self.schemascene)
                 self.schemaview.resetView()
             except (FileNotFoundError, ValueError, KeyError) as e:
@@ -99,7 +112,17 @@ class MainWindow(QMainWindow):
                     '<b>Error opening file:</b>' + '\n\n' + str(e))
 
     def saveFile(self):
-        print('Saving file...')
+        self.schemascene.saveToFile(self.currentFile)
+
+    def saveFileAs(self):
+        filename, _ = QFileDialog.getSaveFileName(self, 'Save schematic as', './schemas')
+        if filename != '':
+            try:
+                self.schemascene.saveToFile(filename)
+            except (FileNotFoundError, ValueError, KeyError) as e:
+                QMessageBox.critical(
+                    self, 'Error savig file',
+                    '<b>Error:</b>' + '\n\n' + str(e))
 
 if __name__ == '__main__':
 

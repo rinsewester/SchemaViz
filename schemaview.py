@@ -90,9 +90,24 @@ class SchemaScene(QGraphicsScene):
         super().__init__()
         # self.changed.connect(self.updateSceneRect)
 
+        # dicts to keep refs to components and links:
+        self.components = {}
+        self.links = {}
+
+    def addComponent(self, comp):
+        self.addItem(comp)
+        self.components[comp.name] = comp
+
+    def addLink(self, link):
+        self.addItem(link)
+        self.links[link.name] = link
+
     def drawBackground(self, painter, rect):
         painter.fillRect(rect, schemastyle.BACKGROUND_COLOR)
 
+
+    # TODO add function like setSchema to keep schema object alive or 
+    #   easy graph operations like find successors and DFS algorithms
     def loadFromFile(self, filename):
         schem = Schematic()
         schem.loadFromFile(filename)
@@ -101,20 +116,19 @@ class SchemaScene(QGraphicsScene):
         self.clear()
 
         # Create components based on graph and add them to the scene
-        compdict = {}  # TODO: add better way to address components and links in scene
         for cmpname in schem.nodes():
             comp = ComponentGI(cmpname, leftSockets=schem.node[cmpname]['leftsockets'],
                 rightSockets=schem.node[cmpname]['rightsockets'])
             comp.location = schem.node[cmpname]['pos']
             # TODO: add better description in tooltip after <br/>
             comp.setToolTip("<b>{}</b><br/>pos: {}".format(cmpname, comp.location))
-            self.addItem(comp)
-            compdict[cmpname] = comp
+            self.addComponent(comp)
 
         # Add the links as well
         for src, dst, linkattr in schem.edges(data=True):
-            srccomp = compdict[src]
-            dstcomp = compdict[dst]
+            srccomp = self.components[src]
+            dstcomp = self.components[dst]
+            name = linkattr['name']
             srcsockname = linkattr['srcoutp']
             dstsockname = linkattr['dstinp']
             if srcsockname in srccomp.leftSocketGItems.keys():
@@ -125,12 +139,33 @@ class SchemaScene(QGraphicsScene):
                 dstsock = dstcomp.leftSocketGItems[dstsockname]
             else:
                 dstsock = dstcomp.rightSocketGItems[dstsockname]
-            link = LinkGI('', srcsock, dstsock)
-            link.thickness = 3
-            self.addItem(link)
+            link = LinkGI(name, srcsock, dstsock)
+            link.thickness = 2
+            self.addLink(link)
         
         # Update the scene bounding rectangle for a full view of the schematic
         self.updateSceneRect()
+
+    def saveToFile(self, filename):
+        schem = Schematic()
+
+        for compgi in self.components.values():
+            leftSocketNames = []
+            for lsi in compgi.leftSocketGItems.values():
+                leftSocketNames.append(lsi.name)
+            rightSocketNames = []
+            for rsi in compgi.rightSocketGItems.values():
+                rightSocketNames.append(rsi.name)
+            schem.add_component(compgi.name, leftsockets=leftSocketNames, rightsockets=rightSocketNames, pos=compgi.location)
+
+        for linkgi in self.links.values():
+            srcSocketname = linkgi.srcSocket.name
+            dstSocketname = linkgi.dstSocket.name
+            srcCompname = linkgi.srcSocket.parentComp.name
+            dstCompname = linkgi.dstSocket.parentComp.name
+            schem.add_link(srcCompname, dstCompname, srcSocketname, dstSocketname, name=linkgi.name)
+
+        schem.storeToFile(filename)
 
     def updateSceneRect(self):
         # Is called when there is a change in the scene
