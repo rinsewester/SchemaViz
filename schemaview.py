@@ -17,12 +17,14 @@ from PyQt5.QtGui import QTransform, QPainter, QColor, QPalette
 import schemastyle
 from schematic import Schematic
 from componentgi import ComponentGI
-from linkgi import LinkGI
+from socketgi import SocketGI
+from linkgi import LinkGI, PartialLinkGI
 
 class SchemaView(QGraphicsView):
 
     def __init__(self):
         super().__init__()
+        self.setMouseTracking(True)
         self.setFrameStyle(QFrame.NoFrame);
         self.setDragMode(QGraphicsView.RubberBandDrag)
         self.setOptimizationFlags(QGraphicsView.DontSavePainterState)
@@ -34,6 +36,20 @@ class SchemaView(QGraphicsView):
         self.defaultZoomLevel = 200
 
         self.resetView()
+
+    def mouseMoveEvent(self, event):
+        if self.scene().nowConnecting:
+            newPos = self.mapToScene(event.pos())
+            self.scene().plink.setDestTempPos(newPos.x(), newPos.y())
+
+        super().mouseMoveEvent(event)
+
+    def mousePressEvent(self, event):
+        # Abort connectio when in connecting mode and not clicking on a socket
+        if self.scene().nowConnecting and len(list(filter(lambda i: isinstance(i, SocketGI), self.items(event.pos())))) == 0:
+                self.scene().abortConnecting()
+
+        super().mousePressEvent(event)
 
     def wheelEvent(self, event):
         #Catch wheelEvent and zoom instead of scroll when Ctrl is pressed
@@ -52,7 +68,16 @@ class SchemaView(QGraphicsView):
             self.setInteractive(False)
             self.setDragMode(True)           
 
-        super().keyPressEvent(event)
+        if event.key() == Qt.Key_Delete:
+            for item in self.scene().selectedItems():
+                if isinstance(item, LinkGI):
+                    self.scene().removeLink(item)
+                elif isinstance(item, ComponentGI):
+                    self.scene().removeComponent(item)
+        elif event.key() == Qt.Key_Escape and self.scene().nowConnecting:
+            self.scene().abortConnecting()
+        else:
+            super().keyPressEvent(event)
 
     def keyReleaseEvent(self, event):
         self.setInteractive(True)
@@ -88,11 +113,12 @@ class SchemaScene(QGraphicsScene):
 
     def __init__(self):
         super().__init__()
-        # self.changed.connect(self.updateSceneRect)
-
         # dicts to keep refs to components and links:
         self.components = {}
         self.links = {}
+
+        self.plink = None
+        self.nowConnecting = False
 
     def addComponent(self, comp):
         self.addItem(comp)
@@ -102,9 +128,45 @@ class SchemaScene(QGraphicsScene):
         self.addItem(link)
         self.links[link.name] = link
 
+    def removeLink(self, link):
+        link.srcSocket.link = None
+        link.dstSocket.link = None
+        self.removeItem(link)
+
+    def removeComponent(self, comp):
+        # First remove all links:
+        for s in comp.leftSocketGItems.values():
+            if s.link is not None:
+                self.removeLink(s.link)
+        for s in comp.rightSocketGItems.values():
+            if s.link is not None:
+                self.removeLink(s.link)
+        # and now remove the component as well
+        self.removeItem(comp)
+
+    def startConnecting(self, srcSocket):
+        self.plink = PartialLinkGI()
+        self.plink.setSourceSocket(srcSocket)
+        self.addItem(self.plink)
+        self.nowConnecting = True
+
+    def abortConnecting(self):
+        # First remove link from component
+        self.plink.srcSocket.link = None
+        # then remove link an go back in unconnecting state
+        self.removeItem(self.plink)
+        del(self.plink)
+        self.nowConnecting = False
+
+    def finishConnecting(self, dstSocket):
+        srcSocket = self.plink.srcSocket
+        # Abort connection to cleanup partial link:
+        self.abortConnecting()
+        # create new link and connect it
+        self.addLink(LinkGI('nx', srcSocket, dstSocket))
+
     def drawBackground(self, painter, rect):
         painter.fillRect(rect, schemastyle.BACKGROUND_COLOR)
-
 
     # TODO add function like setSchema to keep schema object alive or 
     #   easy graph operations like find successors and DFS algorithms

@@ -22,7 +22,10 @@
             ],
             "rightsockets": [
                 "out0",
-                "out1"
+                "out1",
+                "out2",
+                "out3",
+                "out4"
             ]
         },
         {
@@ -52,7 +55,8 @@
                 300.0
             ],
             "leftsockets": [
-                "in"
+                "in",
+                "a"
             ]
         }
     ],

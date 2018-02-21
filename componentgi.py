@@ -22,7 +22,7 @@ class ComponentGI(QGraphicsItem):
         super().__init__()
         
         self.compWidth = 150
-        self.compHeight = 50
+        self.compHeight = max(len(leftSockets), len(rightSockets)) * 20 + 20# 50
         self.snappingIsOn = True
 
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
@@ -98,12 +98,10 @@ class ComponentGI(QGraphicsItem):
                 self.compWidth, self.compHeight)
 
     def hoverEnterEvent(self, event):
-        self.setCursor(Qt.PointingHandCursor)
         self.hovering = True
         super().hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event):
-        self.setCursor(Qt.ArrowCursor)
         self.hovering = False
         super().hoverLeaveEvent(event)
 

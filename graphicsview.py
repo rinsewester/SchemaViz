@@ -9,7 +9,7 @@ author: Sander Giesselink
 """
 
 import sys
-from PyQt5.QtWidgets import QWidget, QGraphicsView, QGraphicsScene, QHBoxLayout, QFrame
+from PyQt5.QtWidgets import QWidget, QGraphicsView, QGraphicsScene, QHBoxLayout, QFrame, QGLWidget
 from PyQt5.QtCore import Qt, QRectF, QPointF
 from PyQt5.QtGui import QTransform, QPainter, QColor, QPalette
 from graph import Graph
@@ -23,6 +23,15 @@ class GraphicsView(QGraphicsView):
         
         # Remove ugly one pixel border by changing the framestyle
         self.setFrameStyle(QFrame.NoFrame);
+
+        # use openGL to accelerate painting:
+        self.setDragMode(QGraphicsView.RubberBandDrag)
+        self.setOptimizationFlags(QGraphicsView.DontSavePainterState)
+        self.setViewportUpdateMode(QGraphicsView.SmartViewportUpdate)
+        self.setCacheMode(QGraphicsView.CacheBackground)
+        self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
+        self.setRenderHint(QPainter.Antialiasing, True)
+        self.setViewport(QGLWidget(QGLFormat(QGL.SampleBuffers)))
 
     def wheelEvent(self, event):
         #Catch wheelEvent and zoom instead of scroll when Ctrl is pressed
@@ -100,12 +109,6 @@ class GraphWidget(QWidget):
         
     def initUI(self):
         self.graphicsView = GraphicsView(self)
-
-        self.graphicsView.setDragMode(QGraphicsView.RubberBandDrag)
-        self.graphicsView.setOptimizationFlags(QGraphicsView.DontSavePainterState)
-        self.graphicsView.setViewportUpdateMode(QGraphicsView.SmartViewportUpdate)
-        self.graphicsView.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
-        self.graphicsView.setRenderHint(QPainter.Antialiasing, True)
 
         #Make a graphics scene
         self.scene = GraphicsScene()
