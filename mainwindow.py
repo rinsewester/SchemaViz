@@ -9,12 +9,28 @@ author: Rinse Wester
 """
 
 import sys
-from PyQt5.QtWidgets import QDockWidget, QApplication, QMainWindow, QAction, QFileDialog, QMessageBox, qApp
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QDockWidget, QListWidget, QHBoxLayout, QWidget, QApplication, QMainWindow, QAction, QFileDialog, QMessageBox, qApp
+from PyQt5.QtCore import Qt, QMimeData
+from PyQt5.QtGui import QIcon, QDrag
 
 from schemaview import SchemaView, SchemaScene
 import schemastyle
+
+class CompListWidget(QListWidget):
+
+    def __init__(self):
+        super().__init__()
+        self.setFixedWidth(128)
+        self.setDragEnabled(True)
+
+    def mousePressEvent(self, event):
+        curItem = self.itemAt(event.pos())
+        if curItem is not None:
+            mimedata = QMimeData()
+            mimedata.setText(curItem.text())
+            drag = QDrag(self)
+            drag.setMimeData(mimedata)
+            drag.exec(Qt.MoveAction)
 
 class MainWindow(QMainWindow):
 
@@ -91,7 +107,23 @@ class MainWindow(QMainWindow):
         zoomOutAction.triggered.connect(self.schemaview.zoomOut)
         resetZoomAction.triggered.connect(self.schemaview.resetView)
 
-        self.setCentralWidget(self.schemaview)
+        # create the list with components
+        self.lwComponents = CompListWidget()
+        self.lwComponents.addItem('Input')
+        self.lwComponents.addItem('Output')
+        self.lwComponents.addItem('Comp 2_2')
+        self.lwComponents.addItem('Comp 4_4')
+
+        self.hblLayout = QHBoxLayout()
+        self.hblLayout.setSpacing(0)
+        self.hblLayout.setContentsMargins(0, 0, 0, 0)
+        self.hblLayout.addWidget(self.lwComponents)
+        self.hblLayout.addWidget(self.schemaview)
+
+        self.wCentrWidget = QWidget()
+        self.wCentrWidget.setLayout(self.hblLayout)
+
+        self.setCentralWidget(self.wCentrWidget)
 
         self.setWindowTitle('Schema designer')
         self.setGeometry(0, 30, 1300, 750)

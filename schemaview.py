@@ -30,12 +30,42 @@ class SchemaView(QGraphicsView):
         self.setOptimizationFlags(QGraphicsView.DontSavePainterState)
         self.setViewportUpdateMode(QGraphicsView.SmartViewportUpdate)
         self.setRenderHint(QPainter.Antialiasing, True)
+        self.setAcceptDrops(True)
 
         self.minZoomLevel = 0
         self.maxZoomLevel = 400
         self.defaultZoomLevel = 200
 
         self.resetView()
+
+    def dragEnterEvent(self, event):
+        if(event.mimeData().hasText()):
+            event.accept()
+        
+        super().dragEnterEvent(event)
+
+    def dragMoveEvent(self, event):
+        if(event.mimeData().hasText()):
+            event.accept()
+        else:
+            super().dragMoveEvent(event)
+
+    def dropEvent(self, event):
+        s = event.mimeData().text()
+        event.accept()
+
+        print('drop:', s)
+        if s == 'Input':
+            comp = ComponentGI('Input', [], ['out'])
+        elif s == 'Output':
+            comp = ComponentGI('Output', ['in'], [])
+        elif s == 'Comp 2_2':
+            comp = ComponentGI('C2x2', ['in_a', 'in_b'], ['out_a', 'out_b'])
+        else:
+            comp = ComponentGI('C4x4', ['in_a', 'in_b', 'in_c', 'in_d'], ['out_a', 'out_b', 'out_c', 'out_d'])
+        
+        comp.setPos(self.mapToScene(event.pos()))
+        self.scene().addComponent(comp)
 
     def mouseMoveEvent(self, event):
         if self.scene().nowConnecting:
@@ -68,7 +98,7 @@ class SchemaView(QGraphicsView):
             self.setInteractive(False)
             self.setDragMode(True)           
 
-        if event.key() == Qt.Key_Delete:
+        if event.key() == Qt.Key_Delete or event.key() == Qt.Key_Backspace:
             for item in self.scene().selectedItems():
                 if isinstance(item, LinkGI):
                     self.scene().removeLink(item)
