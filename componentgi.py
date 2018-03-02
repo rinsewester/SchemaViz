@@ -124,10 +124,10 @@ class ComponentGI(QGraphicsItem):
             round(cur_y / schemastyle.GRID_Y_RES) * schemastyle.GRID_Y_RES)
     
     def contextMenuEvent(self, event):
-        print('COMPONENT menu triggered')
-        # pos = event.scenePos()
-        # point = self.view.mapFromScene(pos)
-        # point = self.view.mapToGlobal(point)
+        pos = event.scenePos()
+        point = self.view.mapFromScene(pos)
+        point = self.view.mapToGlobal(point)
         # self.menu.exec(point)
+        # print()
             
     

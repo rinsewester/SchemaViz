@@ -1,0 +1,77 @@
+{
+    "components": [
+        {
+            "name": "Input",
+            "pos": [
+                25.0,
+                110.0
+            ],
+            "rightsockets": [
+                "out"
+            ]
+        },
+        {
+            "name": "C2x2",
+            "pos": [
+                275.0,
+                160.0
+            ],
+            "leftsockets": [
+                "in_a",
+                "in_b"
+            ],
+            "rightsockets": [
+                "out_a",
+                "out_b"
+            ]
+        },
+        {
+            "name": "Output",
+            "pos": [
+                550.0,
+                90.0
+            ],
+            "leftsockets": [
+                "in"
+            ]
+        },
+        {
+            "name": "Input_68651258",
+            "pos": [
+                25.0,
+                200.0
+            ],
+            "rightsockets": [
+                "out"
+            ]
+        },
+        {
+            "name": "Output_59",
+            "pos": [
+                550.0,
+                200.0
+            ],
+            "leftsockets": [
+                "in"
+            ]
+        }
+    ],
+    "links": [
+        {
+            "src": "Input.out",
+            "dst": "C2x2.in_a"
+        },
+        {
+            "src": "C2x2.out_a",
+            "dst": "Output.in"
+        },
+        {
+            "src": "C2x2.out_b",
+            "dst": "Output_59.in"
+        },
+        {
+            "src": "Input_68651258.out",
+            "dst": "C2x2.in_b"
+        }
+    ]
+}

@@ -9,6 +9,7 @@ author: Rinse Wester
 """
 
 import sys
+import random as rnd
 
 from PyQt5.QtWidgets import QWidget, QGraphicsView, QGraphicsScene, QHBoxLayout, QFrame
 from PyQt5.QtCore import Qt, QRectF, QPointF
@@ -54,15 +55,14 @@ class SchemaView(QGraphicsView):
         s = event.mimeData().text()
         event.accept()
 
-        print('drop:', s)
         if s == 'Input':
-            comp = ComponentGI('Input', [], ['out'])
+            comp = ComponentGI(self.scene().genCompName('Input'), [], ['out'])
         elif s == 'Output':
-            comp = ComponentGI('Output', ['in'], [])
+            comp = ComponentGI(self.scene().genCompName('Output'), ['in'], [])
         elif s == 'Comp 2_2':
-            comp = ComponentGI('C2x2', ['in_a', 'in_b'], ['out_a', 'out_b'])
+            comp = ComponentGI(self.scene().genCompName('C2x2'), ['in_a', 'in_b'], ['out_a', 'out_b'])
         else:
-            comp = ComponentGI('C4x4', ['in_a', 'in_b', 'in_c', 'in_d'], ['out_a', 'out_b', 'out_c', 'out_d'])
+            comp = ComponentGI(self.scene().genCompName('C4x4'), ['in_a', 'in_b', 'in_c', 'in_d'], ['out_a', 'out_b', 'out_c', 'out_d'])
         
         comp.setPos(self.mapToScene(event.pos()))
         self.scene().addComponent(comp)
@@ -150,6 +150,20 @@ class SchemaScene(QGraphicsScene):
         self.plink = None
         self.nowConnecting = False
 
+    def genLinkName(self):
+        # TODO find better way to generate unique name: keep short when possible
+        name = 'e_' + str(rnd.randint(0, 100000000))
+        while name in self.links.keys():
+            name = 'e_' + str(rnd.randint(0, 100000000))
+        return name
+
+    def genCompName(self, prefix):
+        # TODO find better way to generate unique name: keep short when possible
+        name = prefix + '_' + str(rnd.randint(0, 1000))
+        while name in self.links.keys():
+            name = prefix + '_' + str(rnd.randint(0, 1000))
+        return name
+
     def addComponent(self, comp):
         self.addItem(comp)
         self.components[comp.name] = comp
@@ -161,6 +175,7 @@ class SchemaScene(QGraphicsScene):
     def removeLink(self, link):
         link.srcSocket.link = None
         link.dstSocket.link = None
+        del(self.links[link.name])
         self.removeItem(link)
 
     def removeComponent(self, comp):
@@ -172,6 +187,7 @@ class SchemaScene(QGraphicsScene):
             if s.link is not None:
                 self.removeLink(s.link)
         # and now remove the component as well
+        del(self.components[comp.name])
         self.removeItem(comp)
 
     def startConnecting(self, srcSocket):
@@ -193,7 +209,7 @@ class SchemaScene(QGraphicsScene):
         # Abort connection to cleanup partial link:
         self.abortConnecting()
         # create new link and connect it
-        self.addLink(LinkGI('nx', srcSocket, dstSocket))
+        self.addLink(LinkGI(self.genLinkName(), srcSocket, dstSocket))
 
     def drawBackground(self, painter, rect):
         painter.fillRect(rect, schemastyle.BACKGROUND_COLOR)
@@ -204,7 +220,9 @@ class SchemaScene(QGraphicsScene):
         schem = Schematic()
         schem.loadFromFile(filename)
 
-        # remove all items from the scene
+        # start with a blank slate
+        self.links.clear()
+        self.components.clear()
         self.clear()
 
         # Create components based on graph and add them to the scene
